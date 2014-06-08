@@ -5,7 +5,6 @@ namespace mas
 namespace utils
 {
 
-    /* convert wstr->str */
     std::wstring s2ws(const std::string& str)
     {
         typedef std::codecvt_utf8<wchar_t> convert_typeX;
@@ -14,7 +13,6 @@ namespace utils
         return converterX.from_bytes(str);
     }
 
-    /* convert str->wstr*/
     std::string ws2s(const std::wstring& wstr)
     {
         typedef std::codecvt_utf8<wchar_t> convert_typeX;
@@ -23,7 +21,6 @@ namespace utils
         return converterX.to_bytes(wstr);
     }
 
-    /* normalize word, tolower and erase punctual */
     void toStandard(std::string &str)
     {
         std::wstring ABC = L"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -65,7 +62,6 @@ namespace utils
     }
 
 
-    /* check wether word not in stop-words */
     bool goodWord(std::string const & word)
     {
         static std::unordered_set<std::string> stopWords = getStopWords();

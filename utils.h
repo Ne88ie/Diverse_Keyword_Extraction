@@ -18,10 +18,10 @@ namespace mas
 {
 namespace utils
 {
-    /* convert wstr->str */
+    /* convert str->wstr */
     std::wstring s2ws(const std::string& str);
 
-    /* convert str->wstr*/
+    /* convert wstr-wstr*/
     std::string ws2s(const std::wstring& wstr);
 
     /* normalize word, tolower and erase punctual */
