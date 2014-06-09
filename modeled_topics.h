@@ -10,6 +10,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+#include <utility>
 
 #include "TopicModel.h"
 #include "utils.h"
