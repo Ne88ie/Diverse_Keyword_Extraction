@@ -188,7 +188,7 @@ void TopicModel::addDocuments(std::vector<std::string>& names, std::vector<std::
 
         boost::random::mt19937 rng;
         rng.seed(randomSeed);
-        boost::random::uniform_int_distribution<> uint_dist(0,numTopics-1);
+        boost::random::uniform_int_distribution<> uint_dist(0, numTopics-1);
         for (size_t ind = 0; ind < docs; ++ind)
         {
             std::vector<int> topics = texts[ind]->getFeatureTopic();
@@ -398,6 +398,8 @@ void TopicModel::estimate()
             }
         }
 
+        fillDocumentTopicDistribution();
+
     }
     catch(...)
     {
@@ -579,33 +581,20 @@ const std::vector<int> & TopicModel::getCountTokensPerTopic(size_t topic) const
 }
 
 
-void TopicModel::getDocumentTopics(double threshold, int max, std::map<std::string,std::vector<int> > & res)
+void TopicModel::fillDocumentTopicDistribution()
 {
     try
     {
         int docLen;
         std::vector<int> topicCounts(numTopics);
 
-        std::vector<std::pair<int, double> > sortedTopics(numTopics);
+        std::vector<std::pair<int, double>> sortedTopics(numTopics);
 
-        if (max <= 0 || max > numTopics) {
-                max = numTopics;
-        }
-
-        for (size_t doc = 0; doc < texts.size(); ++doc)
+        for (auto doc : texts)
         {
-            std::vector<int>& currentDocTopics = texts[doc]->getFeatureTopic();
+            std::vector<int>& currentDocTopics = doc->getFeatureTopic();
 
             docLen = currentDocTopics.size();
-
-            if (texts[doc]->getName() != "")
-            {
-                res[texts[doc]->getName()].reserve(1);
-            }
-            else
-            {
-                res["no-name"].reserve(1);
-            }
 
             // Count up the tokens
             for (size_t token = 0; token < docLen; ++token)
@@ -621,27 +610,65 @@ void TopicModel::getDocumentTopics(double threshold, int max, std::map<std::stri
             }
 
             std::sort(sortedTopics.begin(), sortedTopics.end(), compare);
-
-            for (size_t i = 0; i < max; ++i)
-            {
-                if (sortedTopics[i].second < threshold) { break; }
-                res[texts[doc]->getName()].push_back(sortedTopics[i].first);
-            }
-
-            topicCounts.assign(numTopics, 0);
+            doc->setTopicDistribution(sortedTopics);
         }
     }
     catch(...)
     {
-            std::cerr << "Can't display topic per document distribution\n";
+            std::cerr << "Can't fill topic per document distribution\n";
     }
 
 }
 
 
-std::string TopicModel::displayTopWords(int numWords, bool usingNewLines)
+void TopicModel::displayDocumentTopics(std::ofstream & out, double threshold, int max)
 {
-    std::string out = "";
+    try
+    {
+        out << "#doc name topic proportion ...\n";
+
+        if (max <= 0 || max > numTopics)
+        {
+            max = numTopics;
+        }
+
+        for (auto doc : texts)
+        {
+
+            out << doc << "\t";
+
+            if (doc->getName() != "")
+            {
+                out << doc->getName();
+            }
+            else
+            {
+                out << "no-name";
+            }
+
+            out << "\t";
+
+            const std::vector<std::pair<int, double>>& sortedTopics = doc->getTopicDistribution();
+
+            for (size_t i = 0; i < max; ++i)
+            {
+                if (sortedTopics[i].second < threshold) { break; }
+
+                out << sortedTopics[i].first << "\t"  << sortedTopics[i].second << "\t";
+            }
+
+            out << std::endl;
+        }
+    }
+    catch(...)
+    {
+        std::cerr << "Can't display topic per document distribution\n";
+    }
+}
+
+
+void TopicModel::displayTopWords(std::ofstream & out, size_t numWords, bool usingNewLines)
+{
     try
     {
         std::vector<std::vector<std::pair<int, double>>> topicSortedWords = getSortedWords();
@@ -655,104 +682,38 @@ std::string TopicModel::displayTopWords(int numWords, bool usingNewLines)
 
             if (usingNewLines)
             {
-                out += std::to_string((long long)topic) + "\t" + std::to_string((long long)alpha[topic]) + "\n";
+                out << std::to_string((long long)topic) + "\t" + std::to_string((long long)alpha[topic]) + "\n";
                 while (it != sortedWords.end() && word <= numWords)
                 {
                     std::pair<int, double> info = *it;
-                    out += dictionary.getFeatureDecoded(info.first) + "\t" + std::to_string((long long)info.second) + "\n";
+                    out << dictionary.getFeatureDecoded(info.first) + "\t" + std::to_string((long long)info.second) + "\n";
                     ++word;
                     ++it;
                 }
             }
             else
             {
-                out += std::to_string((long long)topic) + "\t" + std::to_string((long long)alpha[topic]) + "\n";
+                out << std::to_string((long long)topic) + "\t" + std::to_string((long long)alpha[topic]) + "\n";
 
                 while (it != sortedWords.end() && word <= numWords)
                 {
                     std::pair<int, double> info = *it;
-                    out += dictionary.getFeatureDecoded(info.first) + " ";
+                    out << dictionary.getFeatureDecoded(info.first) + " ";
                     ++word;
                     ++it;
                 }
-                out.append ("\n");
+                out << "\n";
             }
-            out.append ("\n");
+            out << "\n";
         }
     }
     catch(...)
     {
         std::cerr << "Can't display top words\n";
     }
-
-    return out;
 }
 
 
 
-void TopicModel::displayDocumentTopics(std::ofstream & out, double threshold, int max)
-{
-    try{
-        out << "#doc name topic proportion ...\n";
-        int docLen;
-        std::vector<int> topicCounts(numTopics);
-
-        std::vector<std::pair<int, double> > sortedTopics(numTopics);
-
-        if (max <= 0 || max > numTopics)
-        {
-            max = numTopics;
-        }
-
-        for (int doc = 0; doc < texts.size(); ++doc)
-        {
-            std::vector<int>& currentDocTopics = texts[doc]->getFeatureTopic();
-
-            out << doc << "\t";
-
-            if (texts[doc]->getName() != "")
-            {
-                out << texts[doc]->getName();
-            }
-            else
-            {
-                out << "no-name";
-            }
-
-            out << "\t";
-            docLen = currentDocTopics.size();
-
-            // Count up the tokens
-            for (size_t token = 0; token < docLen; ++token)
-            {
-                ++topicCounts[currentDocTopics[token]];
-            }
-
-            // And normalize
-            for (size_t topic = 0; topic < numTopics; ++topic)
-            {
-                sortedTopics[topic].first = topic;
-                sortedTopics[topic].second = (alpha[topic] + topicCounts[topic]) / (docLen + alphaSum) ;
-            }
-
-            std::sort(sortedTopics.begin(), sortedTopics.end(), compare);
-
-            for (size_t i = 0; i < max; ++i)
-            {
-                if (sortedTopics[i].second < threshold) { break; }
-
-                out << sortedTopics[i].first << "\t"  << sortedTopics[i].second << "\t";
-            }
-
-            out << std::endl;
-            topicCounts.assign(numTopics, 0);
-        }
-    }
-    catch(...)
-    {
-        std::cerr << "Can't display topic per document distribution\n";
-    }
-
-}
 }
 }

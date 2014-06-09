@@ -87,12 +87,14 @@ namespace mas
         } */
 
         topicModel.addDocuments(names, contents);
-        int showTopicsInterval = 50, topWords = 20, numIterations = 1000, optimizeInterval = 0, optimizeBurnIn = 200;
-        topicModel.setTopicDisplay(showTopicsInterval, topWords);
 
+        int showTopicsInterval = 50, topWords = 20, numIterations = 1000, optimizeInterval = 0, optimizeBurnIn = 200;
+
+        topicModel.setTopicDisplay(showTopicsInterval, topWords);
         topicModel.setNumIterations(numIterations);
         topicModel.setOptimizeInterval(optimizeInterval);
         topicModel.setBurninPeriod(optimizeBurnIn);
+
         bool useSymmetricAlpha = false;
         topicModel.setSymmetricAlpha(useSymmetricAlpha);
 
@@ -116,12 +118,14 @@ namespace mas
         std::string log_normalize = is_normalize ? "_normalize" : "";
         std::ofstream outTopWords("/Users/annie/NetBeansProjects/Diverse_Keyword_Extraction/data/top_words_small_on"
                                     + std::to_string(numTopics) + "topics"+ log_normalize + ".txt");
-        outTopWords << topicModel.displayTopWords(topWords, true); // "false" for not usingNewLines
+        topicModel.displayTopWords(outTopWords, topWords, true); // "false" for not usingNewLines
         outTopWords.close();
 
+        double threshold = 0;
+        int maxTopics = -1; // all
         std::ofstream outDocumentTopics("/Users/annie/NetBeansProjects/Diverse_Keyword_Extraction/data/doc-topics_small_on"
                             + std::to_string(numTopics) + "topics"+ log_normalize + ".txt");
-        topicModel.displayDocumentTopics(outDocumentTopics, 0, -1);
+        topicModel.displayDocumentTopics(outDocumentTopics, threshold, maxTopics);
         outDocumentTopics.close();
 
         std::cout << "PROCESSING TOPIC MODEL(" << numTopics << log_normalize << ") IS COMPLETED OVER\n";

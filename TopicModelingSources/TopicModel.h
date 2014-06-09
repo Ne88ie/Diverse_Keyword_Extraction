@@ -58,15 +58,15 @@ public:
 
     void optimizeBeta(std::vector<WorkerRunnable>& runnables);
 
-    void estimate();
+    void fillDocumentTopicDistribution();
 
-    void getDocumentTopics(double threshold, int max, std::map<std::string,std::vector<int> >& res);
+    void estimate();
 
     const std::vector<int> & getCountTokensPerTopic(size_t topic) const;
 
-    std::string displayTopWords(int numWords, bool usingNewLines);
+    void displayTopWords(std::ofstream & out, size_t numWords = 20, bool usingNewLines = true);
 
-    void displayDocumentTopics(std::ofstream& out,double threshold, int max);
+    void displayDocumentTopics(std::ofstream& out, double threshold = 0, int max = -1);
 
 
 private:
