@@ -58,11 +58,15 @@ public:
 
     void optimizeBeta(std::vector<WorkerRunnable>& runnables);
 
-    void fillDocumentTopicDistribution();
-
     void estimate();
 
+    const std::vector<std::vector<std::pair<int, double>>> & getTopicSortedWords() const;
+
     const std::vector<int> & getCountTokensPerTopic(size_t topic) const;
+
+    const std::vector<Text *> & getTexts() const;
+
+    const std::vector<int> & getTypeTotals() const;
 
     void displayTopWords(std::ofstream & out, size_t numWords = 20, bool usingNewLines = true);
 
@@ -74,7 +78,8 @@ private:
     unsigned int countOnes(unsigned int x);
     unsigned int highestOneBit(unsigned int x);
 
-    std::vector<std::vector<std::pair<int, double> > > getSortedWords();
+    void fillTopicSortedWords();
+    void fillDocumentTopicDistribution();
     void initializeHistograms();
 
     Dictionary dictionary;
@@ -99,6 +104,7 @@ private:
 
     std::vector<std::vector<int>> typeTopicCounts; // indexed by <feature index, topic index>
     std::vector<int> tokensPerTopic; // indexed by <topic index>
+    std::vector<std::vector<std::pair<int, double>>> topicSortedWords;
 
     // for dirichlet estimation
     std::vector<int> docLengthCounts; // histogram of document sizes

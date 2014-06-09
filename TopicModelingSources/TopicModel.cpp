@@ -2,6 +2,13 @@
 
 #include "TopicModel.h"
 
+
+bool compare(std::pair<int, double>& p1, std::pair<int, double>& p2)
+{
+    return p1.second > p2.second;
+}
+
+
 namespace stc
 {
 namespace textMining
@@ -54,6 +61,7 @@ TopicModel::TopicModel(size_t numberOfTopics, double alphaSum, double beta)
     numThreads = 1;
 }
 
+
 unsigned int TopicModel::countOnes(unsigned int x)
 {
     unsigned int numberOfOneBits = 0;
@@ -69,6 +77,7 @@ unsigned int TopicModel::countOnes(unsigned int x)
 
     return numberOfOneBits;
 }
+
 
 unsigned int TopicModel::highestOneBit(unsigned int x)
 {
@@ -86,6 +95,7 @@ unsigned int TopicModel::highestOneBit(unsigned int x)
     return 1 << indOfOneBit;
 }
 
+
 TopicModel::~TopicModel()
 {
     for (size_t ind = 0; ind < texts.size(); ++ind)
@@ -95,15 +105,18 @@ TopicModel::~TopicModel()
     texts.clear();
 }
 
+
 void TopicModel::setNumIterations (int numIterations)
 {
     this->numIterations = numIterations;
 }
 
+
 void TopicModel::setBurninPeriod (int burninPeriod)
 {
     this->burninPeriod = burninPeriod;
 }
+
 
 void TopicModel::setTopicDisplay(int interval, int n)
 {
@@ -111,10 +124,12 @@ void TopicModel::setTopicDisplay(int interval, int n)
     this->wordsPerTopic = n;
 }
 
+
 void TopicModel::setRandomSeed(unsigned int seed)
 {
     randomSeed = seed;
 }
+
 
 /** Interval for optimizing Dirichlet hyperparameters */
 void TopicModel::setOptimizeInterval(int interval)
@@ -129,26 +144,31 @@ void TopicModel::setOptimizeInterval(int interval)
     }
 }
 
+
 void TopicModel::setSymmetricAlpha(bool b)
 {
     usingSymmetricAlpha = b;
 }
+
 
 void TopicModel::setTemperingInterval(int interval)
 {
     temperingInterval = interval;
 }
 
+
 void TopicModel::setNumThreads(int threads)
 {
     this->numThreads = threads;
 }
+
 
 void TopicModel::setSaveState(int interval, std::string filename)
 {
     this->saveStateInterval = interval;
     this->stateFilename = filename;
 }
+
 
 void TopicModel::setSaveSerializedModel(int interval, std::string filename)
 {
@@ -162,6 +182,7 @@ void TopicModel::setModelOutput(int interval, std::string filename)
     this->outputModelInterval = interval;
     this->outputModelFilename = filename;
 }
+
 
 void TopicModel::addDocuments(std::vector<std::string>& names, std::vector<std::vector<std::string>>& contents)
 {
@@ -208,6 +229,7 @@ void TopicModel::addDocuments(std::vector<std::string>& names, std::vector<std::
 
     }
 }
+
 
 void TopicModel::buildInitialTypeTopicCounts ()
 {
@@ -333,6 +355,7 @@ void TopicModel::initializeHistograms()
     }
 }
 
+
 void TopicModel::estimate()
 {
     try
@@ -398,6 +421,7 @@ void TopicModel::estimate()
             }
         }
 
+        fillTopicSortedWords();
         fillDocumentTopicDistribution();
 
     }
@@ -407,6 +431,7 @@ void TopicModel::estimate()
     }
 
 }
+
 
 void TopicModel::optimizeAlpha(std::vector<WorkerRunnable> runnables)
 {
@@ -487,6 +512,7 @@ void TopicModel::optimizeAlpha(std::vector<WorkerRunnable> runnables)
     }
 }
 
+
 void TopicModel::optimizeBeta(std::vector<WorkerRunnable>& runnables)
 {
     // The histogram starts at count 0, so if all of the
@@ -543,15 +569,11 @@ void TopicModel::optimizeBeta(std::vector<WorkerRunnable>& runnables)
 }
 
 
-bool compare(std::pair<int, double>& p1, std::pair<int, double>& p2)
-{
-    return p1.second > p2.second;
-}
 
-std::vector<std::vector<std::pair<int, double> > > TopicModel::getSortedWords()
+void TopicModel::fillTopicSortedWords()
 {
 
-    std::vector<std::vector<std::pair<int, double> > > topicSortedWords(numTopics);
+    topicSortedWords.resize(numTopics);
 
     // Collect counts
     for (size_t type = 0; type < numTypes; ++type)
@@ -571,13 +593,30 @@ std::vector<std::vector<std::pair<int, double> > > TopicModel::getSortedWords()
     {
         std::sort(topicSortedWords[topic].begin(), topicSortedWords[topic].end(), compare);
     }
+}
 
+
+const std::vector<std::vector<std::pair<int, double>>> & TopicModel::getTopicSortedWords() const
+{
     return topicSortedWords;
 }
+
 
 const std::vector<int> & TopicModel::getCountTokensPerTopic(size_t topic) const
 {
     return tokensPerTopic;
+}
+
+
+const std::vector<Text *> & TopicModel::getTexts() const
+{
+    return texts;
+}
+
+
+const std::vector<int> & TopicModel::getTypeTotals() const
+{
+    return typeTotals;
 }
 
 
@@ -609,8 +648,9 @@ void TopicModel::fillDocumentTopicDistribution()
                 sortedTopics[topic].second = (alpha[topic] + topicCounts[topic]) / (docLen + alphaSum) ;
             }
 
-            std::sort(sortedTopics.begin(), sortedTopics.end(), compare);
+//            std::sort(sortedTopics.begin(), sortedTopics.end(), compare);
             doc->setTopicDistribution(sortedTopics);
+            topicCounts.assign(numTopics, 0);
         }
     }
     catch(...)
@@ -632,10 +672,11 @@ void TopicModel::displayDocumentTopics(std::ofstream & out, double threshold, in
             max = numTopics;
         }
 
+        size_t nom = 0;
         for (auto doc : texts)
         {
 
-            out << doc << "\t";
+            out << nom++ << "\t";
 
             if (doc->getName() != "")
             {
@@ -648,7 +689,9 @@ void TopicModel::displayDocumentTopics(std::ofstream & out, double threshold, in
 
             out << "\t";
 
-            const std::vector<std::pair<int, double>>& sortedTopics = doc->getTopicDistribution();
+            std::vector<std::pair<int, double>> sortedTopics = doc->getTopicDistribution();
+
+            std::sort(sortedTopics.begin(), sortedTopics.end(), compare);
 
             for (size_t i = 0; i < max; ++i)
             {
@@ -671,7 +714,7 @@ void TopicModel::displayTopWords(std::ofstream & out, size_t numWords, bool usin
 {
     try
     {
-        std::vector<std::vector<std::pair<int, double>>> topicSortedWords = getSortedWords();
+//        std::vector<std::vector<std::pair<int, double>>> topicSortedWords = getSortedWords();
 
         // Print results for each topic
         for (size_t topic = 0; topic < numTopics; ++topic)
