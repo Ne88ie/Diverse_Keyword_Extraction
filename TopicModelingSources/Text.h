@@ -21,7 +21,7 @@ private:
 
 	std::vector<int> features;
 	std::vector<int> featureTopic;
-	std::vector<double> topicDistribution;
+	std::vector<double> topicDistribution; // not used
 	std::string name;
 
 };
