@@ -20,116 +20,118 @@
 #define UNASSIGNED_TOPIC -1
 
 namespace stc{
-
 namespace textMining{
+
 class TopicModel
 {
 public:
-	TopicModel(size_t numberOfTopics, double alphaSum, double beta);
-	~TopicModel();
+    TopicModel(size_t numberOfTopics, double alphaSum, double beta);
+    ~TopicModel();
 
-	void setNumIterations (int numIterations);
+    void setNumIterations (int numIterations);
 
-	void setBurninPeriod (int burninPeriod);
+    void setBurninPeriod (int burninPeriod);
 
-	void setTopicDisplay(int interval, int n);
+    void setTopicDisplay(int interval, int n);
 
-	void setRandomSeed(unsigned int seed);
-	
-	void setOptimizeInterval(int interval);
+    void setRandomSeed(unsigned int seed);
 
-	void setSymmetricAlpha(bool b);
-	
-	void setTemperingInterval(int interval);
+    void setOptimizeInterval(int interval);
 
-	void setNumThreads(int threads);
+    void setSymmetricAlpha(bool b);
 
-	void setSaveState(int interval, std::string filename);
+    void setTemperingInterval(int interval);
 
-	void setSaveSerializedModel(int interval, std::string filename);
-	
-	void setModelOutput(int interval, std::string filename);
+    void setNumThreads(int threads);
 
-	void buildInitialTypeTopicCounts();
+    void setSaveState(int interval, std::string filename);
 
-	void addDocuments(std::vector<std::string>& names, std::vector<std::vector<std::string>>& contents);
+    void setSaveSerializedModel(int interval, std::string filename);
 
-	void optimizeAlpha(std::vector<WorkerRunnable> runnables);
+    void setModelOutput(int interval, std::string filename);
 
-	void optimizeBeta(std::vector<WorkerRunnable>& runnables);
+    void buildInitialTypeTopicCounts();
 
-	void estimate();
+    void addDocuments(std::vector<std::string>& names, std::vector<std::vector<std::string>>& contents);
 
-	void getDocumentTopics(double threshold, int max, std::map<std::string,std::vector<int> >& res);
+    void optimizeAlpha(std::vector<WorkerRunnable> runnables);
 
-	std::string displayTopWords(int numWords, bool usingNewLines);
+    void optimizeBeta(std::vector<WorkerRunnable>& runnables);
 
-	void displayDocumentTopics(std::ofstream& out,double threshold, int max);
+    void estimate();
+
+    void getDocumentTopics(double threshold, int max, std::map<std::string,std::vector<int> >& res);
+
+    const std::vector<int> & getCountTokensPerTopic(size_t topic) const;
+
+    std::string displayTopWords(int numWords, bool usingNewLines);
+
+    void displayDocumentTopics(std::ofstream& out,double threshold, int max);
 
 
 private:
 
-	unsigned int countOnes(unsigned int x);
-	unsigned int highestOneBit(unsigned int x);
+    unsigned int countOnes(unsigned int x);
+    unsigned int highestOneBit(unsigned int x);
 
-	std::vector<std::vector<std::pair<int, double> > > getSortedWords();
-	void initializeHistograms();
+    std::vector<std::vector<std::pair<int, double> > > getSortedWords();
+    void initializeHistograms();
 
-	Dictionary dictionary;
+    Dictionary dictionary;
 
-	std::vector<Text *> texts;
-	int numTopics; // Number of topics to be fit
+    std::vector<Text *> texts;
+    int numTopics; // Number of topics to be fit
 
-	// These values are used to encode type/topic counts as
-	//  count/topic pairs in a single int.
-	int topicMask;
-	int topicBits;
+    // These values are used to encode type/topic counts as
+    //  count/topic pairs in a single int.
+    int topicMask;
+    int topicBits;
 
-	int numTypes;
-	int totalTokens;
+    int numTypes;
+    int totalTokens;
 
-	std::vector<double> alpha;	 // Dirichlet(alpha,alpha,...) is the distribution over topics
-	double alphaSum;
-	double beta;   // Prior on per-topic multinomial distribution over words
-	double betaSum;
+    std::vector<double> alpha;	 // Dirichlet(alpha,alpha,...) is the distribution over topics
+    double alphaSum;
+    double beta;   // Prior on per-topic multinomial distribution over words
+    double betaSum;
 
-	bool usingSymmetricAlpha;
-	
-	std::vector<std::vector<int>> typeTopicCounts; // indexed by <feature index, topic index>
-	std::vector<int> tokensPerTopic; // indexed by <topic index>
+    bool usingSymmetricAlpha;
 
-	// for dirichlet estimation
-	std::vector<int> docLengthCounts; // histogram of document sizes
-	std::vector<std::vector<int> > topicDocCounts; // histogram of document/topic counts, indexed by <topic index, sequence position index>
+    std::vector<std::vector<int>> typeTopicCounts; // indexed by <feature index, topic index>
+    std::vector<int> tokensPerTopic; // indexed by <topic index>
 
-	int numIterations;
-	int burninPeriod; 
-	int saveSampleInterval; 
-	int optimizeInterval; 
-	int temperingInterval;
+    // for dirichlet estimation
+    std::vector<int> docLengthCounts; // histogram of document sizes
+    std::vector<std::vector<int> > topicDocCounts; // histogram of document/topic counts, indexed by <topic index, sequence position index>
 
-	int showTopicsInterval;
-	int wordsPerTopic;
+    int numIterations;
+    int burninPeriod;
+    int saveSampleInterval;
+    int optimizeInterval;
+    int temperingInterval;
 
-	int saveStateInterval;
-	std::string stateFilename;
+    int showTopicsInterval;
+    int wordsPerTopic;
 
-	int saveModelInterval;
-	std::string modelFilename;
-	
-	unsigned int randomSeed;
-	bool printLogLikelihood;
+    int saveStateInterval;
+    std::string stateFilename;
 
-	// The number of times each type appears in the corpus
-	std::vector<int> typeTotals;
-	// The max over typeTotals, used for beta optimization
-	int maxTypeCount; 
+    int saveModelInterval;
+    std::string modelFilename;
 
-	int outputModelInterval;
+    unsigned int randomSeed;
+    bool printLogLikelihood;
 
-	std::string outputModelFilename;
-	
-	int numThreads;
+    // The number of times each type appears in the corpus
+    std::vector<int> typeTotals;
+    // The max over typeTotals, used for beta optimization
+    int maxTypeCount;
+
+    int outputModelInterval;
+
+    std::string outputModelFilename;
+
+    int numThreads;
 
 };
 
