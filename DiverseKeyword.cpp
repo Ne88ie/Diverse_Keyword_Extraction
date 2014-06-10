@@ -96,16 +96,17 @@ namespace mas
     std::vector<int> DiverseKeyword::getSetKeywords(const Text * text)
     {
         std::vector<int> setKeywords;
-        std::vector<int> words = text->getFeatures();
+        const std::vector<int> & allWords = text->getFeatures();
+        std::unordered_set<int> uniqueWords(allWords.begin(), allWords.end());
+
         tempText = text;
 
-        while (setKeywords.size() < std::min(numKeyword, words.size()))
+        while (setKeywords.size() < std::min(numKeyword, uniqueWords.size()))
         {
             maxComputedR = 0;
-            std::vector<int>::iterator nextWord(mas::util::argmax(words.begin(), words.end(), reward_function(this)));
+            std::unordered_set<int>::iterator nextWord(mas::util::argmax(uniqueWords.begin(), uniqueWords.end(), reward_function(this)));
             setKeywords.push_back(*nextWord);
-            std::swap(*nextWord, words.back());
-            words.pop_back();
+            uniqueWords.erase(nextWord);
             for (auto ComputedR : bufferComputedR)
             {
                 ComputedR += maxComputedR;

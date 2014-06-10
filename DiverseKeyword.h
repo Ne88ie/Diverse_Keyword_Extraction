@@ -9,6 +9,7 @@
 #ifndef DIVERSE_KEYWORD_H
 #define	DIVERSE_KEYWORD_H
 
+#include <unordered_set>
 #include <algorithm>
 #include <iterator>
 #include <vector>
@@ -56,7 +57,7 @@ public:
 
     std::vector<std::vector<std::string>> getAllDecodedKeywords();
 
-    void printKeywords(std::ostream & out) const;
+    void printKeywords(std::ostream & out = std::cout) const;
 };
 
 } // namespace mas

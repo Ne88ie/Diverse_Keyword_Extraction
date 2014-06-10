@@ -77,9 +77,9 @@ public:
 
     const size_t getNumTopics() const { return numTopics; }
 
-    void printTopWords(std::ostream & out, size_t numWords = 20, bool usingNewLines = true);
+    void printTopWords(std::ostream & out = std::cout, size_t numWords = 20, bool usingNewLines = true);
 
-    void printDocumentTopics(std::ostream& out, double threshold = 0, int max = -1) const;
+    void printDocumentTopics(std::ostream& out = std::cout, double threshold = 0, int max = -1) const;
 
 private:
     unsigned int countOnes(unsigned int x);
