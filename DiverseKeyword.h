@@ -28,8 +28,7 @@ class DiverseKeyword
     size_t numKeyword;
     double lambda;
     size_t numTopics;
-    std::vector<size_t> setKeywords;
-    std::vector<std::vector<size_t>> allKeywords;
+    std::vector<std::vector<int>> allKeywords;
     std::vector<std::vector<double>> topicDistributionOnWords;
 
     const Text * tempText;
@@ -43,18 +42,9 @@ class DiverseKeyword
 
     friend class reward_function;
 
-//    class reward_function : public std::unary_function< int, double >
-//    {
-//        Diverse_Keyword * nested;
-//    public:
-//        reward_function(Diverse_Keyword * th);
-//        double operator() (const int indWord) const;
-//    };
-
-
     void fillTopicDistributionOnWords();
 
-    void fillSetKeywords(const Text * text);
+    std::vector<int> getSetKeywords(const Text * text);
 
     void fillTextKeywords();
 
@@ -62,7 +52,7 @@ public:
 
     DiverseKeyword(const TopicModel & topModel, size_t nKeyword = 2, double lmbda = 0.75);
 
-    const std::vector<std::vector<size_t>> & getAllKeywords() const { return allKeywords; }
+    const std::vector<std::vector<int>> & getAllKeywords() const { return allKeywords; }
 
     std::vector<std::vector<std::string>> getAllDecodedKeywords();
 

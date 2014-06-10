@@ -35,29 +35,6 @@ namespace mas
     using namespace mas::util;
 
 
-//        double computeR(const std::vector<size_t> & set, size_t topic)
-//        {
-//            const std::vector<std::pair<int, double>>& topicDistributionInDoc = tempText->getTopicDistribution();
-//
-//            double sum = 0;
-//            for (size_t i : set)
-//            {
-//                sum += topicDistributionOnWords.at(i).at(topic) * topicDistributionInDoc.at(topic).second;
-//            }
-//
-//            return sum;
-//        }
-
-//        double computeR(size_t indWord, size_t topic, const std::vector<std::pair<int, double>>& topicDistributionInDoc)
-//        {
-//            double res = topicDistributionOnWords.at(i).at(topic) * topicDistributionInDoc.at(topic).second;
-//
-//            return ;
-//        }
-
-
-//        friend class reward_function;
-
     class DiverseKeyword::reward_function : public std::unary_function< int, double >
     {
         DiverseKeyword * nested;
@@ -70,18 +47,15 @@ namespace mas
         double operator() (const int indWord) const
         {
             double res = 0;
-            nested->maxComputedR = 0;
-
             const std::vector<std::pair<int, double>>& topicDistributionInDoc = nested->tempText->getTopicDistribution();
 
-            for (size_t i = 0; i < nested->numTopics; ++i)
+            for (size_t indTopic = 0; indTopic < nested->numTopics; ++indTopic)
             {
-//                res += topicDistributionInDoc.at(i).second *
-//                        pow(nested->computeR(std::vector<int>(1, indWord), i) + nested->bufferComputedR.at(i), nested->lambda);
-                double computedR = nested->topicDistributionOnWords.at(indWord).at(i) * topicDistributionInDoc.at(i).second;
-                nested->maxComputedR = std::max(computedR, nested->maxComputedR);
-                res += topicDistributionInDoc.at(i).second * pow(computedR + nested->bufferComputedR.at(i), nested->lambda);
+                double computedR = nested->topicDistributionOnWords.at(indWord).at(indTopic) * topicDistributionInDoc.at(indTopic).second;
+                res += topicDistributionInDoc.at(indTopic).second * pow(computedR + nested->bufferComputedR.at(indTopic), nested->lambda);
             }
+
+            nested->maxComputedR = std::max(res, nested->maxComputedR);
 
             return res;
         }
@@ -119,14 +93,15 @@ namespace mas
     }
 
 
-    void DiverseKeyword::fillSetKeywords(const Text * text)
+    std::vector<int> DiverseKeyword::getSetKeywords(const Text * text)
     {
-        setKeywords.clear();
+        std::vector<int> setKeywords;
         std::vector<int> words = text->getFeatures();
         tempText = text;
 
-        while (setKeywords.size() < numKeyword)
+        while (setKeywords.size() < std::min(numKeyword, words.size()))
         {
+            maxComputedR = 0;
             std::vector<int>::iterator nextWord(mas::util::argmax(words.begin(), words.end(), reward_function(this)));
             setKeywords.push_back(*nextWord);
             std::swap(*nextWord, words.back());
@@ -136,6 +111,8 @@ namespace mas
                 ComputedR += maxComputedR;
             }
         }
+
+        return setKeywords;
     }
 
 
@@ -145,8 +122,7 @@ namespace mas
 
         for (auto text: texts)
         {
-            fillSetKeywords(text);
-            allKeywords.push_back(setKeywords);
+            allKeywords.push_back(getSetKeywords(text));
         }
     }
 
@@ -158,7 +134,7 @@ namespace mas
             , topicModel(topModel)
             , texts(topModel.getTexts())
     {
-        allKeywords.resize(texts.size());
+        allKeywords.reserve(texts.size());
         bufferComputedR.assign(numTopics, 0);
         topicDistributionOnWords.assign(topicModel.getDictionary().getFeaturesNum(), std::vector<double>(numTopics, 0));
         fillTextKeywords();
@@ -176,7 +152,7 @@ namespace mas
                 {
                     for (size_t i = 0; i < numKeyword; ++i)
                     {
-                        size_t indWord = allKeywords.at(indText).at(i);
+                        int indWord = allKeywords.at(indText).at(i);
                         std::string word = topicModel.getDictionary().getFeatureDecoded(indWord);
                         AllKeywordsDecoded.at(indText).at(i) = word;
                     }
@@ -184,7 +160,7 @@ namespace mas
         }
         catch(...)
         {
-            std::cerr << "Can't return top keywords\n";
+            std::cerr << "Can't return keywords\n";
         }
 
         return AllKeywordsDecoded;
@@ -210,7 +186,7 @@ namespace mas
         }
         catch(...)
         {
-            std::cerr << "Can't print tkeywords\n";
+            std::cerr << "Can't print keywords\n";
         }
     }
 
