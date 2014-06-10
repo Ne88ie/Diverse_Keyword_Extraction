@@ -19,7 +19,8 @@
 
 namespace mas
 {
-    void modeled_topics(size_t numTopics = 2, bool normalise = false, bool del_stop_words = false);
+    void handleText(size_t numTopics = 2, size_t numKeywords = 2, size_t topWords = 20, bool normalise = false, bool del_stop_words = false,
+            std::string sourceTexts = "", std::string fileTopWords = "",  std::string fileDocTopics = "", std::string fileKeywords = "");
 } // namespace mas
 
 

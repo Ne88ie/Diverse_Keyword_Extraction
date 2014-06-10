@@ -1,4 +1,4 @@
-#include "modeled_topics.h"
+#include "handle.h"
 
 using namespace stc::textMining;
 using namespace mas::utils;
@@ -10,11 +10,11 @@ typedef std::vector<std::vector<std::string>> vvs;
 bool IS_NORMALIZE = false;
 bool DEL_STOP_WORDS = false;
 bool CHANGE = false;
+std::string SOURCETEXTS;
 std::pair<vs, vvs> TEXT;
 
-std::pair<vs, vvs> get_content(bool is_normalize, bool del_stop_words)
+std::pair<vs, vvs> getContent(bool is_normalize, bool del_stop_words, std::string fileName)
 {
-    std::string fileName = "/Users/annie/NetBeansProjects/Diverse_Keyword_Extraction/data/20000_mallet_small.txt";
     std::ifstream fin(fileName);
 
     vs names;
@@ -46,7 +46,7 @@ std::pair<vs, vvs> get_content(bool is_normalize, bool del_stop_words)
 
     fin.close();
 
-    std::cout << "DATA LOADED" << std::endl;
+    std::cout << "DATA LOADED FROM: " << fileName << std::endl;
 
     return std::make_pair(names, contents);
 }
@@ -54,16 +54,25 @@ std::pair<vs, vvs> get_content(bool is_normalize, bool del_stop_words)
 
 namespace mas
 {
-    void modeled_topics(size_t numTopics,     bool is_normalize,      bool del_stop_words)
-    { /* by deault      size_t numTopics = 2, bool normalise = false, bool del_stop_words = false */
+    void handleText(size_t numTopics, size_t numKeywords, size_t topWords, bool is_normalize, bool del_stop_words,
+        std::string sourceTexts, std::string fileTopWords,  std::string fileDocTopics, std::string fileKeywords)
+    {
 
-        if (!CHANGE || (is_normalize != IS_NORMALIZE || del_stop_words != DEL_STOP_WORDS))
+        if (sourceTexts.empty())
         {
-            TEXT = get_content(is_normalize, del_stop_words);
+            std::cout << "ERROR: SPECIFY SOURCE FILE!\n";
+            return;
+        }
+
+        if (!CHANGE || (is_normalize != IS_NORMALIZE || del_stop_words != DEL_STOP_WORDS) || SOURCETEXTS != sourceTexts)
+        {
+            TEXT = getContent(is_normalize, del_stop_words, sourceTexts);
             CHANGE = true;
+            SOURCETEXTS = sourceTexts;
             IS_NORMALIZE = is_normalize;
             DEL_STOP_WORDS = del_stop_words;
         }
+
 
         vs & names = TEXT.first;
         vvs & contents = TEXT.second;
@@ -88,7 +97,7 @@ namespace mas
 
         topicModel.addDocuments(names, contents);
 
-        int showTopicsInterval = 50, topWords = 20, numIterations = 1000, optimizeInterval = 0, optimizeBurnIn = 200;
+        int showTopicsInterval = 50, numIterations = 1000, optimizeInterval = 0, optimizeBurnIn = 200;
 
         topicModel.setTopicDisplay(showTopicsInterval, topWords);
         topicModel.setNumIterations(numIterations);
@@ -117,23 +126,56 @@ namespace mas
 
 
         std::string log_normalize = is_normalize ? "_NORMALIZE" : "";
-        std::ofstream outTopWords("/Users/annie/NetBeansProjects/Diverse_Keyword_Extraction/data/top_words_small" +"_ON_"
-                                    + std::to_string(numTopics) + "_TOPICS"+ log_normalize + ".txt");
+        std::string log_stopwords = del_stop_words ? "_DELL_STOP-WORDS" : "";
+        std::string log_info = "_ON_" + std::to_string(numTopics) + "_TOPICS"+ log_normalize + log_stopwords;
+
+
+        if (fileTopWords.empty())
+        {
+            std::cout << "\n\n--------------*** OUT TOP WORDS FOR TOPICS ***--------------\n";
+            topicModel.printTopWords(std::cout, topWords, true); // "false" for not usingNewLines
+            std::cout << "\n";
+        }
+        else
+        {
+            std::ofstream outTopWords(fileTopWords + log_info + ".txt");
         topicModel.printTopWords(outTopWords, topWords, true); // "false" for not usingNewLines
         outTopWords.close();
+        }
+
 
         double threshold = 0;
         int maxTopics = -1; // all
-        std::ofstream outDocumentTopics("/Users/annie/NetBeansProjects/Diverse_Keyword_Extraction/data/doc-topics_small_on"
-                            + std::to_string(numTopics) + "TOPICS"+ log_normalize + ".txt");
-        topicModel.printDocumentTopics(outDocumentTopics, threshold, maxTopics);
-        outDocumentTopics.close();
+
+        if (fileDocTopics.empty())
+        {
+            std::cout << "\n\n--------------*** OUT DOCUMENT TOPICS DISTRIBUTION ***--------------\n";
+            topicModel.printDocumentTopics(std::cout, threshold, maxTopics);
+            std::cout << "\n";
+        }
+        else
+        {
+            std::ofstream outDocumentTopics(fileDocTopics + log_info + ".txt");
+            topicModel.printDocumentTopics(outDocumentTopics, threshold, maxTopics);
+            outDocumentTopics.close();
+        }
 
 
-        DiverseKeyword diverseKeyword(topicModel, 5);
-        diverseKeyword.printKeywords(std::cout);
+        DiverseKeyword diverseKeyword(topicModel, numKeywords);
+        if (fileKeywords.empty())
+        {
+            std::cout << "\n\n--------------*** OUT DOCUMENT DIVERSE KEYWORDS ***--------------\n";
+            diverseKeyword.printKeywords(std::cout);
+            std::cout << "\n";
+        }
+        else
+        {
+            std::ofstream outKeywords(fileKeywords + log_info + ".txt");
+            diverseKeyword.printKeywords(outKeywords);
+            outKeywords.close();
+        }
 
 
-        std::cout << "PROCESSING TOPIC MODEL(" << numTopics << log_normalize << ") IS COMPLETED OVER\n";
+        std::cout << "PROCESSING IS COMPLETED OVER (" << log_info << ") \n";
     }
 } // namespace mas

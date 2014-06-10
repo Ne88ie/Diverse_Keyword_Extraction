@@ -49,7 +49,7 @@ namespace utils
     std::unordered_set<std::string> getStopWords()
     {
         std::unordered_set<std::string> set;
-        std::string fileName = "/Users/annie/NetBeansProjects/Diverse_Keyword_Extraction/data/ru_stopwords_from_voyant.txt"; // отладка
+        std::string fileName = "data/ru_stopwords_from_voyant.txt";
         std::ifstream fin(fileName);
         std::string word;
         while (!fin.eof())
