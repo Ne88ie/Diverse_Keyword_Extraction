@@ -1,40 +1,48 @@
+#ifndef DICTIONARY_H
+#define	DICTIONARY_H
+
 #include <cstdlib>
 #include <vector>
 #include <string>
 #include <map>
 
-namespace stc{
+namespace stc
+{
+namespace textMining
+{
 
-namespace textMining{
 class Dictionary
 {
 public:
-	Dictionary();
-	~Dictionary();
+    Dictionary();
+    ~Dictionary();
 
-	void addFeatures(std::vector<std::string> & features, std::vector<int> & encodedFeatures);
+    void addFeatures(std::vector<std::string> & features, std::vector<int> & encodedFeatures);
 
-	int getFeatureEncoded(std::string feature);
+    int getFeatureEncoded(std::string feature);
 
-	std::string getFeatureDecoded(int featureCode);
+    std::string getFeatureDecoded(int featureCode) const;
 
-	void stopGrowth();
-	
-	int getFeaturesNum() {return featuresNum; }
+    void stopGrowth();
 
-	std::vector<int> getFeatureTotals(){return featureTotals;}
+    int getFeaturesNum() const {return featuresNum; }
+
+    std::vector<int> getFeatureTotals() const {return featureTotals;}
 
 private:
 
-	void addNewFeature(std::string& feature);
+    void addNewFeature(std::string& feature);
 
-	std::map<std::string,int> featureEncoding;
-	std::vector<std::string> featureDecoding;
-	std::vector<int> featureTotals;
+    std::map<std::string, int> featureEncoding;
+    std::vector<std::string> featureDecoding;
+    std::vector<int> featureTotals;
 
-	bool growthStopped;
-	int featuresNum;
+    bool growthStopped;
+    int featuresNum;
 
 };
-}
-}
+
+} // namespace textMining
+} // namespace stc
+
+#endif	/* DICTIONARY_H */

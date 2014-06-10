@@ -596,30 +596,6 @@ void TopicModel::fillTopicSortedWords()
 }
 
 
-const std::vector<std::vector<std::pair<int, double>>> & TopicModel::getTopicSortedWords() const
-{
-    return topicSortedWords;
-}
-
-
-const std::vector<int> & TopicModel::getCountTokensPerTopic(size_t topic) const
-{
-    return tokensPerTopic;
-}
-
-
-const std::vector<Text *> & TopicModel::getTexts() const
-{
-    return texts;
-}
-
-
-const std::vector<int> & TopicModel::getTypeTotals() const
-{
-    return typeTotals;
-}
-
-
 void TopicModel::fillDocumentTopicDistribution()
 {
     try
@@ -661,7 +637,7 @@ void TopicModel::fillDocumentTopicDistribution()
 }
 
 
-void TopicModel::displayDocumentTopics(std::ofstream & out, double threshold, int max)
+void TopicModel::printDocumentTopics(std::ostream & out, double threshold, int max) const
 {
     try
     {
@@ -676,7 +652,7 @@ void TopicModel::displayDocumentTopics(std::ofstream & out, double threshold, in
         for (auto doc : texts)
         {
 
-            out << nom++ << "\t";
+            out << ++nom << "\t";
 
             if (doc->getName() != "")
             {
@@ -705,12 +681,12 @@ void TopicModel::displayDocumentTopics(std::ofstream & out, double threshold, in
     }
     catch(...)
     {
-        std::cerr << "Can't display topic per document distribution\n";
+        std::cerr << "Can't print topic per document distribution\n";
     }
 }
 
 
-void TopicModel::displayTopWords(std::ofstream & out, size_t numWords, bool usingNewLines)
+void TopicModel::printTopWords(std::ostream & out, size_t numWords, bool usingNewLines)
 {
     try
     {
@@ -719,9 +695,9 @@ void TopicModel::displayTopWords(std::ofstream & out, size_t numWords, bool usin
         // Print results for each topic
         for (size_t topic = 0; topic < numTopics; ++topic)
         {
-            std::vector<std::pair<int, double> >& sortedWords = topicSortedWords[topic];
+            std::vector<std::pair<int, double>>& sortedWords = topicSortedWords[topic];
             int word = 1;
-            std::vector<std::pair<int, double> >::iterator it = sortedWords.begin();
+            std::vector<std::pair<int, double>>::iterator it = sortedWords.begin();
 
             if (usingNewLines)
             {
@@ -752,11 +728,11 @@ void TopicModel::displayTopWords(std::ofstream & out, size_t numWords, bool usin
     }
     catch(...)
     {
-        std::cerr << "Can't display top words\n";
+        std::cerr << "Can't print top words\n";
     }
 }
 
 
 
-}
-}
+} // namespace textMining
+} // namespace stc

@@ -1,3 +1,6 @@
+#ifndef TOPICMODEL_H
+#define	TOPICMODEL_H
+
 #include <string>
 #include <cstdlib>
 #include <vector>
@@ -19,8 +22,10 @@
 #define DEFAULT_BETA 0.01
 #define UNASSIGNED_TOPIC -1
 
-namespace stc{
-namespace textMining{
+namespace stc
+{
+namespace textMining
+{
 
 class TopicModel
 {
@@ -60,21 +65,23 @@ public:
 
     void estimate();
 
-    const std::vector<std::vector<std::pair<int, double>>> & getTopicSortedWords() const;
+    const std::vector<std::vector<std::pair<int, double>>> & getTopicSortedWords() const { return topicSortedWords; }
 
-    const std::vector<int> & getCountTokensPerTopic(size_t topic) const;
+    const std::vector<int> & getCountTokensPerTopic() const { return tokensPerTopic; }
 
-    const std::vector<Text *> & getTexts() const;
+    const std::vector<Text *> & getTexts() const { return texts; }
 
-    const std::vector<int> & getTypeTotals() const;
+    const std::vector<int> & getTypeTotals() const { return typeTotals; }
 
-    void displayTopWords(std::ofstream & out, size_t numWords = 20, bool usingNewLines = true);
+    const Dictionary & getDictionary() const { return dictionary; }
 
-    void displayDocumentTopics(std::ofstream& out, double threshold = 0, int max = -1);
+    const size_t getNumTopics() const { return numTopics; }
 
+    void printTopWords(std::ostream & out, size_t numWords = 20, bool usingNewLines = true);
+
+    void printDocumentTopics(std::ostream& out, double threshold = 0, int max = -1) const;
 
 private:
-
     unsigned int countOnes(unsigned int x);
     unsigned int highestOneBit(unsigned int x);
 
@@ -141,5 +148,7 @@ private:
 
 };
 
-}
-}
+} // namespace textMining
+} // namespace stc
+
+#endif	/* TOPICMODEL_H */

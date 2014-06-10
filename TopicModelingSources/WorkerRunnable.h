@@ -1,3 +1,6 @@
+#ifndef WORKERRUNNABLE_H
+#define	WORKERRUNNABLE_H
+
 #include <cstdlib>
 #include <vector>
 #include <iostream>
@@ -5,88 +8,92 @@
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_real.hpp>
+
 #include "Text.h"
 
 #define DEFAULT_BETA  0.01
 #define UNASSIGNED_TOPIC -1
 
-namespace stc{
-
-namespace textMining{
+namespace stc
+{
+namespace textMining
+{
 
 class WorkerRunnable
 {
 public:
-	WorkerRunnable(int numTopics, std::vector<double>& alpha, double alphaSum, double beta,
-							   boost::random::mt19937 & rng, std::vector<Text *>& texts,
-							   std::vector<std::vector<int> >& typeTopicCounts, 
-							   std::vector<int>& tokensPerTopic,
-							   int startDoc, int numDocs);
-	~WorkerRunnable();
+    WorkerRunnable(int numTopics, std::vector<double>& alpha, double alphaSum, double beta,
+                    boost::random::mt19937 & rng, std::vector<Text *>& texts,
+                    std::vector<std::vector<int> >& typeTopicCounts,
+                    std::vector<int>& tokensPerTopic,
+                    int startDoc, int numDocs);
+    ~WorkerRunnable();
 
-	void makeOnlyThread();
+    void makeOnlyThread();
 
-	std::vector<int>& getTokensPerTopic() { return tokensPerTopic; }
-	std::vector<std::vector<int> >& getTypeTopicCounts() { return typeTopicCounts; }
+    std::vector<int>& getTokensPerTopic() { return tokensPerTopic; }
+    std::vector<std::vector<int> >& getTypeTopicCounts() { return typeTopicCounts; }
 
-	std::vector<int>& getDocLengthCounts() { return docLengthCounts; }
-	std::vector<std::vector<int> >& getTopicDocCounts() { return topicDocCounts; }
+    std::vector<int>& getDocLengthCounts() { return docLengthCounts; }
+    std::vector<std::vector<int> >& getTopicDocCounts() { return topicDocCounts; }
 
-	void initializeAlphaStatistics(int size);
-	
-	void collectAlphaStatistics();
+    void initializeAlphaStatistics(int size);
 
-	void resetBeta(double beta, double betaSum);
+    void collectAlphaStatistics();
 
-	void run();
+    void resetBeta(double beta, double betaSum);
+
+    void run();
 
 protected:
 
-	void sampleTopicsForOneDoc (std::vector<int>& tokenSequence, std::vector<int>& topicSequence,
-										  bool readjustTopicsAndStats /* currently ignored */);
+    void sampleTopicsForOneDoc (std::vector<int>& tokenSequence, std::vector<int>& topicSequence,
+                                bool readjustTopicsAndStats /* currently ignored */);
 
-	void buildLocalTypeTopicCounts();
+    void buildLocalTypeTopicCounts();
 
-	bool isFinished;
+    bool isFinished;
 
-	std::vector<Text *>& texts;
-	int startDoc, numDocs;
+    std::vector<Text *>& texts;
+    int startDoc, numDocs;
 
-	int numTopics; // Number of topics to be fit
+    int numTopics; // Number of topics to be fit
 
-	// These values are used to encode type/topic counts as
-	//  count/topic pairs in a single int.
-	int topicMask;
-	int topicBits;
+    // These values are used to encode type/topic counts as
+    //  count/topic pairs in a single int.
+    int topicMask;
+    int topicBits;
 
-	int numTypes;
+    int numTypes;
 
-	std::vector<double>& alpha;	 // Dirichlet(alpha,alpha,...) is the distribution over topics
-	double alphaSum;
-	double beta;   // Prior on per-topic multinomial distribution over words
-	double betaSum;
-	
-	double smoothingOnlyMass;
-	std::vector<double> cachedCoefficients;
+    std::vector<double>& alpha;	 // Dirichlet(alpha,alpha,...) is the distribution over topics
+    double alphaSum;
+    double beta;   // Prior on per-topic multinomial distribution over words
+    double betaSum;
 
-	std::vector<std::vector<int> >& typeTopicCounts; // indexed by <feature index, topic index>
-	std::vector<int>& tokensPerTopic; // indexed by <topic index>
+    double smoothingOnlyMass;
+    std::vector<double> cachedCoefficients;
 
-	// for dirichlet estimation
-	std::vector<int> docLengthCounts; // histogram of document sizes
-	std::vector<std::vector<int> > topicDocCounts; // histogram of document/topic counts, indexed by <topic index, sequence position index>
+    std::vector<std::vector<int> >& typeTopicCounts; // indexed by <feature index, topic index>
+    std::vector<int>& tokensPerTopic; // indexed by <topic index>
 
-	bool shouldSaveState;
-	bool shouldBuildLocalCounts;
-	
-	boost::random::mt19937 rng;
+    // for dirichlet estimation
+    std::vector<int> docLengthCounts; // histogram of document sizes
+    std::vector<std::vector<int> > topicDocCounts; // histogram of document/topic counts, indexed by <topic index, sequence position index>
+
+    bool shouldSaveState;
+    bool shouldBuildLocalCounts;
+
+    boost::random::mt19937 rng;
 
 private:
-	//TODO change destination of these functions
-	unsigned int countOnes(unsigned int x);
-	unsigned int highestOneBit(unsigned int x);
+    //TODO change destination of these functions
+    unsigned int countOnes(unsigned int x);
+    unsigned int highestOneBit(unsigned int x);
 
 };
 
-}
-}
+} // namespace textMining
+} // namespace stc
+
+#endif	/* WORKERRUNNABLE_H */
