@@ -115,19 +115,23 @@ namespace mas
         topicModel.setRandomSeed(13232);
         topicModel.estimate();
 
+        DiverseKeyword diverseKeyword(topicModel, 3);
+        diverseKeyword.printKeywords(std::cout);
+
+
         std::string log_normalize = is_normalize ? "_normalize" : "";
         std::ofstream outTopWords("/Users/annie/NetBeansProjects/Diverse_Keyword_Extraction/data/top_words_small_on"
                                     + std::to_string(numTopics) + "topics"+ log_normalize + ".txt");
-        topicModel.displayTopWords(outTopWords, topWords, true); // "false" for not usingNewLines
+        topicModel.printTopWords(outTopWords, topWords, true); // "false" for not usingNewLines
         outTopWords.close();
 
         double threshold = 0;
         int maxTopics = -1; // all
         std::ofstream outDocumentTopics("/Users/annie/NetBeansProjects/Diverse_Keyword_Extraction/data/doc-topics_small_on"
                             + std::to_string(numTopics) + "topics"+ log_normalize + ".txt");
-        topicModel.displayDocumentTopics(outDocumentTopics, threshold, maxTopics);
+        topicModel.printDocumentTopics(outDocumentTopics, threshold, maxTopics);
         outDocumentTopics.close();
 
         std::cout << "PROCESSING TOPIC MODEL(" << numTopics << log_normalize << ") IS COMPLETED OVER\n";
     }
-}
+} // namespace mas

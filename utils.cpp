@@ -72,5 +72,5 @@ namespace utils
         return true;
     }
 
-}
-}
+} // namespace utils
+} //namespace mas

@@ -14,12 +14,13 @@
 #include <utility>
 
 #include "TopicModel.h"
+#include "DiverseKeyword.h"
 #include "utils.h"
 
 namespace mas
 {
     void modeled_topics(size_t numTopics = 2, bool normalise = false, bool del_stop_words = false);
-}
+} // namespace mas
 
 
 #endif	/* MODELED_TOPICS_H */

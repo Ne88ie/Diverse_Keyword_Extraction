@@ -31,8 +31,9 @@ namespace utils
 
     /* check wether word not in stop-words */
     bool goodWord(std::string const & word);
-}
-}
+
+} // namespace utils
+} // namespace mas
 
 
 
