@@ -9,11 +9,18 @@
 #ifndef CONVERT_H
 #define	CONVERT_H
 
-#include <iostream>
+
 #include <string>
-#include <fstream>
 #include <locale>
+#include <cwchar>
+#include <iostream>
+#include <fstream>
+#include <algorithm>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+
+#include "utils.h"
+#include "codecvt_cp1251.h"
 
 
 namespace mas

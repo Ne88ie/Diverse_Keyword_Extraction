@@ -1,11 +1,6 @@
 #include "convert.h"
-#include "utils.h"
-#include <cwchar>
-#include <cstring>
-#include <algorithm>
-#include "codecvt_cp1251.h"
+//#include <cstring>
 
-#include <boost/algorithm/string.hpp>
 
 namespace mas
 {
@@ -17,7 +12,6 @@ namespace util
         boost::trim(buffer);
         if (!buffer.empty())
         {
-//            out << buffer << ' ';
             out << mas::utils::ws2s(buffer) << ' ';
             buffer.clear();
         }
@@ -82,7 +76,6 @@ void convert(const std::string & inputPath, const std::string & outputPath)
     try
     {
         path inputDir(inputPath);
-//        std::locale::global(std::locale(""));
         std::ofstream outputFile(outputPath);
 
         if (is_directory(inputDir))
@@ -94,13 +87,10 @@ void convert(const std::string & inputPath, const std::string & outputPath)
                     std::string theme = mas::utils::ws2s(nextDir->path().filename().wstring());
                     std::replace(theme.begin(), theme.end(), ' ', '_');
 
-                    std::cout << theme << std::endl;
-
                     for (auto nextFile = directory_iterator(*nextDir); nextFile != directory_iterator(); ++nextFile)
                     {
                         if (is_regular_file(*nextFile))
                         {
-
                             std::wifstream inputFile(nextFile->path().string());
                             std::locale cp1251(std::locale(""), new codecvt_cp1251);
                             inputFile.imbue(cp1251);
@@ -108,7 +98,6 @@ void convert(const std::string & inputPath, const std::string & outputPath)
                             std::string fileName = mas::utils::ws2s(nextFile->path().stem().wstring());
                             std::replace(fileName.begin(), fileName.end(), ' ', '_');
 
-                            std::cout << '\t' << fileName << std::endl;
                             util::addFile(inputFile, outputFile, theme, fileName);
                         }
                     }
