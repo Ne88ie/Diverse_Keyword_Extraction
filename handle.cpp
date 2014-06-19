@@ -40,7 +40,7 @@ std::pair<vs, vvs> getContent(bool is_normalize, bool del_stop_words, std::strin
             {
                 delPunctuation(pitem);
             }
-            if (!del_stop_words || (del_stop_words && goodWord(pitem)))
+            if (!pitem.empty() && (!del_stop_words || (del_stop_words && goodWord(pitem))))
             {
                 contents[contents.size() - 1].push_back(pitem);
             }
