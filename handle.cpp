@@ -58,8 +58,15 @@ std::pair<vs, vvs> getContent(bool is_normalize, bool del_stop_words, std::strin
 
 namespace mas
 {
-    void handleText(size_t numTopics, size_t numKeywords, size_t topWords, bool is_normalize, bool del_stop_words,
-        std::string sourceTexts, std::string fileTopWords,  std::string fileDocTopics, std::string fileKeywords)
+    void handleText(std::string sourceTexts,
+                    size_t numTopics,
+                    size_t topWords,
+                    size_t numKeywords,
+                    bool is_normalize,
+                    bool del_stop_words,
+                    std::string fileTopWords,
+                    std::string fileDocTopics,
+                    std::string fileKeywords)
     {
         std::cout << "HANDLE " << sourceTexts<< " STARTED ...\n";
 
