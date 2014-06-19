@@ -73,7 +73,7 @@ size_t convert(const std::string & inputPath, const std::string & outputPath)
 
     std::cout << "CONVERT " << inputPath << " STARTED ...\n";
 
-    size_t numTopics= 0;
+    size_t numTopics = 0;
 
     try
     {
