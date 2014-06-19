@@ -20,7 +20,7 @@ namespace util
                  const std::string & theme,
                  const std::string & fileName)
     {
-        std::string firstLine = "TOPIC:_" + theme + "_FILENAME:_" + fileName + " X ";
+        std::string firstLine = "TOPIC:" + theme + "_FILENAME:" + fileName + " X ";
         bool printFirstLine = false;
 
         std::wstring buffer;
@@ -93,7 +93,7 @@ size_t convert(const std::string & inputPath, const std::string & outputPath)
 
                     for (auto nextFile = directory_iterator(*nextDir); nextFile != directory_iterator(); ++nextFile)
                     {
-                        if (is_regular_file(*nextFile))
+                        if (is_regular_file(*nextFile) && nextFile->path().extension().string() == ".txt")
                         {
                             std::wifstream inputFile(nextFile->path().string());
                             std::locale cp1251(std::locale(""), new codecvt_cp1251);
