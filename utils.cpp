@@ -46,6 +46,18 @@ namespace utils
         str = ws2s(wstr);
     }
 
+    void delPunctuation(std::string &str)
+    {
+        for (size_t i = 0; i < str.size(); ++i)
+        {
+            if (ispunct(str[i]) && str[i] != '-')
+            {
+                str.erase(str.begin() + i);
+                --i;
+            }
+        }
+    }
+
     std::unordered_set<std::string> getStopWords()
     {
         std::unordered_set<std::string> set;

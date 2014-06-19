@@ -1,12 +1,10 @@
 #include "convert.h"
-//#include <cstring>
 
 
 namespace mas
 {
 namespace util
 {
-
     void outToStream(std::ofstream & out, std::wstring & buffer)
     {
         boost::trim(buffer);
@@ -69,9 +67,13 @@ namespace util
 } // namespace util
 
 
-void convert(const std::string & inputPath, const std::string & outputPath)
+size_t convert(const std::string & inputPath, const std::string & outputPath)
 {
     using namespace boost::filesystem;
+
+    std::cout << "CONVERT " << inputPath << " STARTED ...\n";
+
+    size_t numTopics= 0;
 
     try
     {
@@ -82,6 +84,8 @@ void convert(const std::string & inputPath, const std::string & outputPath)
         {
             for (auto nextDir = directory_iterator(inputDir); nextDir != directory_iterator(); ++nextDir)
             {
+                ++numTopics;
+
                 if (is_directory(*nextDir))
                 {
                     std::string theme = mas::utils::ws2s(nextDir->path().filename().wstring());
@@ -113,8 +117,12 @@ void convert(const std::string & inputPath, const std::string & outputPath)
     }
     catch (const filesystem_error& ex)
     {
-      std::cout << ex.what() << '\n';
+      std::cerr << ex.what() << '\n';
     }
+
+    std::cout << "... CONVERT FINISHED (base contains " << numTopics << " folders) \n\n";
+
+    return numTopics;
 }
 
 

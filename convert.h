@@ -25,7 +25,9 @@
 
 namespace mas
 {
-    void convert(const std::string & inputPath, const std::string & outputPath);
+    // convert return number of folders/topics in base
+    size_t convert(const std::string & inputPath, const std::string & outputPath);
+
 } // namespace mas
 
 

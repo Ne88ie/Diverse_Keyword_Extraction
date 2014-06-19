@@ -27,6 +27,8 @@ namespace utils
     /* normalize word, tolower and erase punctual */
     void toStandard(std::string &str);
 
+    void delPunctuation(std::string &str);
+
     std::unordered_set<std::string> getStopWords();
 
     /* check wether word not in stop-words */

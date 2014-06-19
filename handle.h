@@ -12,6 +12,7 @@
 #include <fstream>
 #include <algorithm>
 #include <utility>
+#include <boost/algorithm/string.hpp>
 
 #include "TopicModel.h"
 #include "DiverseKeyword.h"
