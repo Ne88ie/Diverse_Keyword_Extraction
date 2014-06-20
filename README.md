@@ -2,8 +2,11 @@ Diverse_Keyword_Extraction
 ==========================
 
 В папке data/results находятся по три файла на каждый эксперимент:
+
 "Имя_базы_top_words_log_info.txt" – top_words это наиболее характерные слова для каждой темы, получаемые при TopicModeling
+
 "Имя_базы_doc-topics_log_info.txt" – doc-topics это распределение тем по каждому документу, получаемое при TopicModeling
+
 "Имя_базы_doc-keywords_log_info.txt" – doc-keywords это ключевые слова для каждого документа, получаемые при Diverse_Keyword_Extraction
 
 "_log_info" это информация о количестве тем, которые выделял TopicModeling из текстов, о том была ли нормализация слов и исключались ли стоп-слова из текста при обработке
