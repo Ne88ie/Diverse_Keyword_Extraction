@@ -21,7 +21,7 @@ Diverse_Keyword_Extraction
 
 #####`TopicModel` на выходе возвращает:
 * top-words – наиболее характерные слова для каждой темы, формат файла:
-```        
+```
 1   Dirichlet_alpha_parameter
 word    frequency
 word    frequency
@@ -34,7 +34,7 @@ word    frequency
 ```
 
 * doc-topics – распределение тем по каждому документу, формат файла:
-```       
+```
 #doc    name    topic   proportion ...
 1   filename1   topic   max_proportion    othertopic    less_proportion ...
 2   filename2   topic   max_proportion    othertopic    less_proportion ...
@@ -43,7 +43,7 @@ word    frequency
 
 #####`DiverseKeyword` на выходе возвращает:
 * doc-keywords – ключевые слова для каждого документа, формат файла:
-```        
+```
 #doc    name    keywords ...
 1   filename1   word   word   ...
 2   filename2   word   word   ...
@@ -56,7 +56,7 @@ word    frequency
 
 В `main.cpp` находятся примеры работы с алгоритмом.
 
-Дополнительные параметры для компилятора: `-lboost_filesystem -lboost_system -g -ITopicModelingSources -std=c++11`
+Дополнительные параметры для компилятора g++: `-lboost_filesystem -lboost_system -g -ITopicModelingSources -std=c++11`
 
 
 

@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 //    handleText(sourceTexts, numTopics, numTopWords, numKeywords, to_lowercase, del_stop_words, outTopWords, outDocTopics, outDocKeywords);
 //    handleText(sourceTexts);
 //    handleText(sourceTexts, numTopics, numTopWords, numKeywords, true, true, outTopWords, outDocTopics, outDocKeywords);
-//    handleText(sourceTexts, numTopics, numTopWords, numKeywords, true, true); // see stdout_example_small.txt
+//    handleText(sourceTexts, numTopics, numTopWords, numKeywords, true, true); // see data/results/stdout_example_small.txt
 
     return 0;
 }
