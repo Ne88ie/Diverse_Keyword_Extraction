@@ -1,4 +1,4 @@
-Diverse_Keyword_Extraction
+Diverse Keyword Extraction
 ==========================
 
 *Spring 2014. Speech Technology Center*
