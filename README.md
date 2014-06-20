@@ -1,6 +1,9 @@
 Diverse_Keyword_Extraction
 ==========================
 
+Весенняя практика в ЦРТ 2014г. Идея алгоритма взята из статьи Diverse Keyword Extraction from Conversations http://aclweb.org/anthology//P/P13/P13-2115.pdf
+
+==========================
 В папке data/results находятся по три файла на каждый эксперимент:
 
 "Имя_базы_top_words_log_info.txt" – top_words это наиболее характерные слова для каждой темы, получаемые при TopicModeling
