@@ -1,7 +1,9 @@
 Diverse_Keyword_Extraction
 ==========================
 
-Весенняя практика 2014 в ЦРТ. Алгоритм взят из статьи ["Diverse Keyword Extraction from Conversations"](http://aclweb.org/anthology//P/P13/P13-2115.pdf).
+*Spring 2014. Speech Technology Center*
+
+*Algorithm from ["Diverse Keyword Extraction from Conversations"](http://aclweb.org/anthology//P/P13/P13-2115.pdf)*
 
 --------------------------
 Алгоритм Diverse Keyword Extraction позволяет получить набор слов, которые представляют смысловое содержание текстов.Поощряются как сходство слов, для извлечения наиболее репрезентативных слов, так и разнообразие слов, чтобы покрыть несколько тем, если это необходимо. Diverse Keyword Extraction использует Topic Model (LDA).
@@ -54,9 +56,6 @@ word    frequency
 
 `TopicModel` во время обработки текста, удаляет пунктуацию, кроме дефисов, также если активены флаги `to_lowercase` и `del_stop_words`, то все слова приводятся к нижнему регистру и удаляются стоп-слова соотвественно. Списки стоп-слов лежат в папке `data`. Сейчас используется список стоп-слов взятый из voyant для русского языка `ru_stopwords_from_voyant.txt`, который вручную расширен. Указать другой файл для стоп-слов можно в методе `getStopWords` из `utils.cpp`.
 
-В `main.cpp` находятся примеры работы с алгоритмом. Предполагается, что в корне проекта расположена папка `data` c базами.
+В `main.cpp` находятся примеры работы с алгоритмом. Предполагается, что в корне проекта расположены папка `data` c базами, и папка `data/results` для результатов.
 
 Дополнительные параметры для компилятора g++: `-lboost_filesystem -lboost_system -g -ITopicModelingSources -std=c++11`.
-
-
-
