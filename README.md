@@ -1,7 +1,7 @@
 Diverse_Keyword_Extraction
 ==========================
 
-Весенняя практика в ЦРТ 2014г. Идея алгоритма взята из статьи Diverse Keyword Extraction from Conversations http://aclweb.org/anthology//P/P13/P13-2115.pdf
+Весенняя практика в ЦРТ 2014г. Идея алгоритма взята из статьи "Diverse Keyword Extraction from Conversations" http://aclweb.org/anthology//P/P13/P13-2115.pdf
 
 ==========================
 В папке data/results находятся по три файла на каждый эксперимент:
