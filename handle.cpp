@@ -7,13 +7,13 @@ using namespace mas::utils;
 typedef std::vector<std::string> vs;
 typedef std::vector<std::vector<std::string>> vvs;
 
-bool IS_NORMALIZE = false;
+bool TO_LOWERCASE = false;
 bool DEL_STOP_WORDS = false;
 bool CHANGE = false;
 std::string SOURCETEXTS;
 std::pair<vs, vvs> TEXT;
 
-std::pair<vs, vvs> getContent(bool is_normalize, bool del_stop_words, std::string fileName)
+std::pair<vs, vvs> getContent(bool  to_lowercase, bool del_stop_words, std::string fileName)
 {
     std::ifstream fin(fileName);
 
@@ -21,7 +21,7 @@ std::pair<vs, vvs> getContent(bool is_normalize, bool del_stop_words, std::strin
     vvs contents;
     std::string item, pitem = "";
 
-    if (del_stop_words) is_normalize = true;
+    if (del_stop_words)  to_lowercase = true;
     while (!fin.eof())
     {
         fin >> item;
@@ -32,7 +32,7 @@ std::pair<vs, vvs> getContent(bool is_normalize, bool del_stop_words, std::strin
         }
         else if (pitem.length() > 3 && (pitem[0] != 'X' || pitem.length() > 1))
         {
-            if (is_normalize)
+            if ( to_lowercase)
             {
                 toStandard(pitem);
             }
@@ -62,7 +62,7 @@ namespace mas
                     size_t numTopics,
                     size_t topWords,
                     size_t numKeywords,
-                    bool is_normalize,
+                    bool to_lowercase,
                     bool del_stop_words,
                     std::string fileTopWords,
                     std::string fileDocTopics,
@@ -76,12 +76,12 @@ namespace mas
             return;
         }
 
-        if (!CHANGE || (is_normalize != IS_NORMALIZE || del_stop_words != DEL_STOP_WORDS) || SOURCETEXTS != sourceTexts)
+        if (!CHANGE || (to_lowercase != TO_LOWERCASE || del_stop_words != DEL_STOP_WORDS) || SOURCETEXTS != sourceTexts)
         {
-            TEXT = getContent(is_normalize, del_stop_words, sourceTexts);
+            TEXT = getContent(to_lowercase, del_stop_words, sourceTexts);
             CHANGE = true;
             SOURCETEXTS = sourceTexts;
-            IS_NORMALIZE = is_normalize;
+            TO_LOWERCASE = to_lowercase;
             DEL_STOP_WORDS = del_stop_words;
         }
 
@@ -98,13 +98,15 @@ namespace mas
         }
 
         /*
-        for (size_t ind = 0; ind < std::min(10, int(contents.size())); ++ind){
-                std::cout << names[ind] << std::endl;
-                for (size_t i = 0; i < std::min(5, int(contents[ind].size())); ++ i){
-                        setlocale(LC_ALL, "Russian");
-                        std::cout << contents[ind][i] << " ";
-                }
-                std::cout << std::endl;
+        for (size_t ind = 0; ind < std::min(10, int(contents.size())); ++ind)
+        {
+            std::cout << names[ind] << std::endl;
+            for (size_t i = 0; i < std::min(5, int(contents[ind].size())); ++i)
+            {
+                setlocale(LC_ALL, "Russian");
+                std::cout << contents[ind][i] << " ";
+            }
+            std::cout << std::endl;
         } */
 
         topicModel.addDocuments(names, contents);
@@ -137,9 +139,9 @@ namespace mas
         topicModel.estimate();
 
 
-        std::string log_normalize = is_normalize ? "_NORMALIZE" : "";
+        std::string log_lowercase = to_lowercase ? "_LOWERCASE" : "";
         std::string log_stopwords = del_stop_words ? "_DELL_STOP-WORDS" : "";
-        std::string log_info = "_ON_" + std::to_string(numTopics) + "_TOPICS"+ log_normalize + log_stopwords;
+        std::string log_info = "_ON_" + std::to_string(numTopics) + "_TOPICS" + log_lowercase + log_stopwords;
 
 
         if (fileTopWords.empty())

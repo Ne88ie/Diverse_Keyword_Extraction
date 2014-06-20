@@ -9,7 +9,7 @@
 #ifndef CONVERT_H
 #define	CONVERT_H
 
-
+#include <set>
 #include <string>
 #include <locale>
 #include <cwchar>

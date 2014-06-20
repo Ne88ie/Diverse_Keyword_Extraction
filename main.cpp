@@ -15,7 +15,8 @@ void globalOUT(const std::string & base)
     size_t numKeywords      = 6;
 
 
-    std::string outTopWords    = prefixToResult + base + "_top_words";
+    // outPaths without extension because at the end of the file name is added log_info
+    std::string outTopWords    = prefixToResult + base + "_top-words";
     std::string outDocTopics   = prefixToResult + base + "_doc-topics";
     std::string outDocKeywords = prefixToResult + base + "_doc-keywords";
 
@@ -36,22 +37,22 @@ int main(int argc, char* argv[])
 
 
 
-// // examples of work with TopicModeling and DiverseKeywordExtraction without convert
+// // examples of work with Topic_Modeling and Diverse_Keyword_Extraction without convert
 //    std::string sourceTexts     = "data/example_small.txt";
-//    std::string outTopWords     = "data/results/small_top_words"; // std::out by default
+//    std::string outTopWords     = "data/results/small_top-words"; // std::out by default
 //    std::string outDocTopics    = "data/results/small_doc-topics"; // std::out by default
 //    std::string outDocKeywords  = "data/results/small_doc-keywords"; // std::out by default
 //
 //    size_t numTopics    = 5;     // 2 by default
 //    size_t numTopWords  = 20;    // 5 by default
 //    size_t numKeywords  = 6;     // 3 by default
-//    bool is_normalize   = false; // false by default
+//    bool to_lowercase   = false; // false by default
 //    bool del_stop_words = false; // false by default
 //
-//    handleText(sourceTexts, numTopics, numTopWords, numKeywords, is_normalize, del_stop_words, outTopWords, outDocTopics, outDocKeywords);
+//    handleText(sourceTexts, numTopics, numTopWords, numKeywords, to_lowercase, del_stop_words, outTopWords, outDocTopics, outDocKeywords);
 //    handleText(sourceTexts);
 //    handleText(sourceTexts, numTopics, numTopWords, numKeywords, true, true, outTopWords, outDocTopics, outDocKeywords);
-//    handleText(sourceTexts, numTopics, numTopWords, numKeywords, true, true);
+//    handleText(sourceTexts, numTopics, numTopWords, numKeywords, true, true); // see stdout_example_small.txt
 
     return 0;
 }

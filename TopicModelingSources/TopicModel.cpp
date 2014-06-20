@@ -701,7 +701,7 @@ void TopicModel::printTopWords(std::ostream & out, size_t numWords, bool usingNe
 
             if (usingNewLines)
             {
-                out << std::to_string((long long)topic) + "\t" + std::to_string((long long)alpha[topic]) + "\n";
+                out << std::to_string(static_cast<long long>(topic + 1)) + "\t" + std::to_string(static_cast<long long>(alpha[topic])) + "\n";
                 while (it != sortedWords.end() && word <= numWords)
                 {
                     std::pair<int, double> info = *it;
@@ -712,7 +712,7 @@ void TopicModel::printTopWords(std::ostream & out, size_t numWords, bool usingNe
             }
             else
             {
-                out << std::to_string((long long)topic) + "\t" + std::to_string((long long)alpha[topic]) + "\n";
+                out << std::to_string(static_cast<long long>(topic + 1)) + "\t" + std::to_string(static_cast<long long>(alpha[topic])) + "\n";
 
                 while (it != sortedWords.end() && word <= numWords)
                 {

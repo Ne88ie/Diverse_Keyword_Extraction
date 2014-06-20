@@ -20,15 +20,15 @@
 
 namespace mas
 {
-    void handleText(std::string sourceTexts = "",
-                    size_t numTopics = 2,
-                    size_t topWords = 5,
-                    size_t numKeywords = 3,
-                    bool normalise = false,
-                    bool del_stop_words = false,
-                    std::string fileTopWords = "",
+    void handleText(std::string sourceTexts   = "",
+                    size_t numTopics          = 2,
+                    size_t topWords           = 5,
+                    size_t numKeywords        = 3,
+                    bool to_lowercase         = false,
+                    bool del_stop_words       = false,
+                    std::string fileTopWords  = "",
                     std::string fileDocTopics = "",
-                    std::string fileKeywords = "");
+                    std::string fileKeywords  = "");
 } // namespace mas
 
 

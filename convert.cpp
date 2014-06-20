@@ -27,11 +27,15 @@ namespace util
         std::getline<wchar_t>(fin, buffer);
         boost::trim(buffer);
 
+        std::set<std::wstring> ignoredTags = {L"Sentence="};
+
         if (!buffer.empty())
         {
-            if (buffer.compare(0, 9, L"Sentence=") == 0)
+            auto itTag = std::find_if(ignoredTags.begin(), ignoredTags.end(),
+                            [&buffer](std::wstring tag){return buffer.compare(0, tag.size(), tag) == 0;});
+            if (itTag != ignoredTags.end())
             {
-                std::wstring smallBuf = buffer.substr(9);
+                std::wstring smallBuf = buffer.substr(itTag->size());
                 boost::trim(smallBuf);
                 if (!smallBuf.empty())
                 {
@@ -84,10 +88,10 @@ size_t convert(const std::string & inputPath, const std::string & outputPath)
         {
             for (auto nextDir = directory_iterator(inputDir); nextDir != directory_iterator(); ++nextDir)
             {
-                ++numTopics;
-
                 if (is_directory(*nextDir))
                 {
+                    bool existTxtFile = false;
+
                     std::string theme = mas::utils::ws2s(nextDir->path().filename().wstring());
                     std::replace(theme.begin(), theme.end(), ' ', '_');
 
@@ -95,9 +99,12 @@ size_t convert(const std::string & inputPath, const std::string & outputPath)
                     {
                         if (is_regular_file(*nextFile) && nextFile->path().extension().string() == ".txt")
                         {
+                            existTxtFile = true;
                             std::wifstream inputFile(nextFile->path().string());
-                            std::locale cp1251(std::locale(""), new codecvt_cp1251);
-                            inputFile.imbue(cp1251);
+
+                            std::locale cp1251(std::locale(""), new codecvt_cp1251); // for cp1251 files
+                            inputFile.imbue(cp1251); // for cp1251 files
+//                            inputFile.imbue(std::locale("")); // for utf-8 files
 
                             std::string fileName = mas::utils::ws2s(nextFile->path().stem().wstring());
                             std::replace(fileName.begin(), fileName.end(), ' ', '_');
@@ -105,6 +112,8 @@ size_t convert(const std::string & inputPath, const std::string & outputPath)
                             util::addFile(inputFile, outputFile, theme, fileName);
                         }
                     }
+
+                    if (existTxtFile) ++numTopics;
                 }
             }
         }
