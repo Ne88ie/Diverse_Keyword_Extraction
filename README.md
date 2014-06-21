@@ -58,4 +58,4 @@ word    frequency
 
 В `main.cpp` находятся примеры работы с алгоритмом. Предполагается, что в корне проекта расположены папка `data` c базами и списком стоп-слов, и папка `data/results` для результатов.
 
-Дополнительные параметры для компилятора g++: `-lboost_filesystem -lboost_system -g -ITopicModelingSources -std=c++11`.
+Дополнительные параметры для компилятора gcc: `-lboost_filesystem -lboost_system -g -ITopicModelingSources -std=c++11`.
